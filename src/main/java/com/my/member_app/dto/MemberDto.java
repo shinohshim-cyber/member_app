@@ -25,5 +25,11 @@ public class MemberDto {
         return member;
     }
     //   Member Entity -> MemberDto(DTO) 로 변환
-
+    public static MemberDto toDto(Member member){
+        return new MemberDto(
+                member.getId(),
+                member.getName(),
+                member.getAge(),
+                member.getAddress());
+    }
 }
