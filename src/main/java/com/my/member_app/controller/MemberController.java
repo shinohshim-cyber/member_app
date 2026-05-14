@@ -41,12 +41,37 @@ public class MemberController {
         redirectAttributes.addFlashAttribute("message", "등록이 완료되었습니다.");
         return "redirect:/member/view";
     }
-    @PostMapping("/delete")
+    @PostMapping("delete")
     public String delete(@RequestParam("deleteId") Long deleteId,
                          RedirectAttributes redirectAttributes){
         log.info("============== deleteId = " + deleteId);
         memberService.delete(deleteId);
         redirectAttributes.addFlashAttribute("message", "정상적으로 삭제되었습니다.");
+        return "redirect:/member/view";
+    }
+    @GetMapping("update")
+    public String update(@RequestParam("updateId") Long updateId,
+                                 Model model,
+                                 RedirectAttributes redirectAttributes){
+        //  1. 선택한 id를 가져오는지 확인한다.
+        log.info("============== updateId = " + updateId);
+        //  2. 해당 id를 검색해서 dto 받아온다.
+        MemberDto dto = memberService.findById(updateId);
+        log.info("============== dto = " + dto);
+        //  3. dto 비어 있는지 확인 -> member/view
+        if(dto == null){
+            redirectAttributes.addFlashAttribute("message", "선택한 데이터가 없습니다.");
+            return "redirect:/member/view";
+        }
+        //  4. 모델에 담아서 updateForm에 보낸다.
+        model.addAttribute("dto", dto);
+        return "updateMember";
+    }
+    @PostMapping("update")
+    public String update(@ModelAttribute("dto") MemberDto dto, RedirectAttributes redirectAttributes){
+        log.info("============== updateDto = " + dto);
+        memberService.insert(dto);
+        redirectAttributes.addFlashAttribute("message", "정상적으로 수정되었습니다.");
         return "redirect:/member/view";
     }
 }
